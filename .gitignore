@@ -1,0 +1,24 @@
+# --- System Files ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Environment / Secrets ---
+.env
+*.env.local
+.venv/
+venv/
+ENV/
+
+# --- Common Build Folders ---
+node_modules/
+dist/
+build/
+bin/
+obj/
+*.log
+
+# --- IDE Config ---
+.vscode/
+.idea/
+*.swp
