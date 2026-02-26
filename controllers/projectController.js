@@ -13,19 +13,53 @@ const { upload } = require("../config/cloudinary");
 // @route   POST /api/projects
 // @access  Private — Admin, Manager
 exports.createProject = async (req, res) => {
-    try {
-        const projectData = { ...req.body };
+  try {
+    // Clone the body
+    const projectData = { ...req.body };
 
-        if (req.files) {
-            if (req.files.coverImage) projectData.coverImage = req.files.coverImage[0].path;
-            if (req.files.demoVideo) projectData.demoVideo = req.files.demoVideo[0].path;
-        }
-
-        const project = await Project.create(projectData);
-        res.status(201).json({ status: "success", data: project });
-    } catch (err) {
-        res.status(400).json({ status: "error", message: err.message });
+    // 1. ✅ FIX: Parse FAQs (They arrive as a JSON string via FormData)
+    if (req.body.faqs) {
+      try {
+        projectData.faqs = JSON.parse(req.body.faqs);
+      } catch (e) {
+        console.error("FAQ Parsing Error:", e);
+        projectData.faqs = [];
+      }
     }
+
+    // 2. ✅ FIX: Handle Tags (FormData usually sends them as a string or multiple entries)
+    // If your frontend sends "tags[]", Multer might put it in req.body['tags[]']
+    const rawTags = req.body.tags || req.body["tags[]"];
+    if (rawTags) {
+      projectData.tags = Array.isArray(rawTags)
+        ? rawTags
+        : rawTags.split(",").map((tag) => tag.trim());
+    }
+
+    // 3. ✅ Handle Cloudinary/Multer Files
+    if (req.files) {
+      if (req.files.coverImage && req.files.coverImage[0]) {
+        projectData.coverImage = req.files.coverImage[0].path;
+      }
+      if (req.files.demoVideo && req.files.demoVideo[0]) {
+        projectData.demoVideo = req.files.demoVideo[0].path;
+      }
+    }
+
+    // 4. Create the Project
+    const project = await Project.create(projectData);
+
+    res.status(201).json({
+      status: "success",
+      data: project,
+    });
+  } catch (err) {
+    console.error("Project Creation Error 💥:", err);
+    res.status(400).json({
+      status: "error",
+      message: err.message,
+    });
+  }
 };
 
 // @desc    Get all projects (with populated client, manager, teamMembers)

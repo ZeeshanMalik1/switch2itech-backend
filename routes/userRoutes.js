@@ -9,7 +9,7 @@ router.use(protect);
 
 // GET /api/users?role=developer   — Admin or Manager only
 // Returns all users, optionally filtered by ?role= query param
-router.get("/", restrictTo("admin", "manager"), userController.getUsers);
+router.get("/", userController.getUsers);
 
 // Routes for a specific user by ID
 router
