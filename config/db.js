@@ -5,7 +5,7 @@ const connectDB = async () => {
     // Replace the string below with your REAL string from Atlas or Local
     const uri = process.env.MONGO_URI;
 
-    const conn = await mongoose.connect(uri, {
+    const conn = await mongoose.connect(`${uri}`, {
       serverSelectionTimeoutMS: 5000, // Fails fast if no connection
     });
 
