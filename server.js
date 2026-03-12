@@ -73,7 +73,7 @@ app.use("/api/testimonials", testimonialRoutes);
 // ============================
 
 // Root Health Check
-app.get("/health", (req, res) => {
+app.get("/", (req, res) => {
   res.status(200).json({
     status: "success",
     message: "Switch2itech Backend Working Successfully",
