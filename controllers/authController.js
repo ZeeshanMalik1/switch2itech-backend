@@ -91,6 +91,7 @@ exports.verifyEmail = async (req, res) => {
         }
 
         user.isEmailVerified = true;
+        user.isVerified = true;
         user.emailVerificationCode = undefined;
         await user.save({ validateBeforeSave: false });
 
@@ -116,6 +117,7 @@ exports.verifyPhone = async (req, res) => {
         }
 
         user.isPhoneVerified = true;
+        user.isVerified = true;
         user.phoneVerificationCode = undefined;
         await user.save({ validateBeforeSave: false });
 
